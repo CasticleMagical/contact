@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Contact Info</title>
     <style>
         body {
@@ -10,7 +11,9 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
         }
         .card {
             background: white;
@@ -18,11 +21,12 @@
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             text-align: center;
-            max-width: 320px;
+            max-width: 350px;
+            width: 100%;
             transition: transform 0.3s ease;
         }
         .card:hover {
-            transform: scale(1.05);
+            transform: scale(1.03);
         }
         .card img {
             width: 120px;
@@ -40,6 +44,28 @@
             margin: 10px 0;
             font-size: 18px;
             color: #555;
+            word-break: break-word;
+        }
+        #device-info {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #777;
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 20px;
+            }
+            .card img {
+                width: 100px;
+                height: 100px;
+            }
+            .card h2 {
+                font-size: 20px;
+            }
+            .card p {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
@@ -51,3 +77,21 @@
         <p><strong>Phone:</strong> +1 (555) 123-4567</p>
         <p><strong>Email:</strong> john.doe@example.com</p>
         <p><strong>Occupation:</strong> Life Insurance Specialist</p>
+        <div id="device-info"></div>
+    </div>
+
+    <script>
+        function detectDevice() {
+            const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent);
+            const deviceInfo = document.getElementById('device-info');
+            if (isMobile) {
+                deviceInfo.textContent = "You're viewing this on a Mobile Device 📱";
+            } else {
+                deviceInfo.textContent = "You're viewing this on a Desktop or Laptop 💻";
+            }
+        }
+
+        detectDevice();
+    </script>
+</body>
+</html>
