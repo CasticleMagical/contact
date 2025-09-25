@@ -84,10 +84,21 @@
                 <a href="https://www.linkedin.com/in/longduong32/" target="_blank">LinkedIn</a>
             </strong>
         </p>
+        <!-- Resume buttons -->
         <div class="resume-links">
-      <a href="/Resume.pdf" target="_blank" rel="noopener noreferrer">View Resume</a>
-      <a href="/Resume.pdf" download="Long_Duong_Resume.pdf">Download Resume</a>
-    </div>
+        <!-- Opens PDF in a new tab -->
+        <a href="Resume.pdf" target="_blank" rel="noopener noreferrer">View Resume</a>
+        
+        <!-- Forces download of the PDF -->
+        <a href="Resume.pdf" download="Long_Duong_Resume.pdf">Download Resume</a>
+        </div>
+        <div id="device-info"></div>
+        <script>
+            const deviceInfo = document.getElementById('device-info');
+            const userAgent = navigator.userAgent;
+            const platform = navigator.platform;
+            deviceInfo.textContent = `Device Info: ${platform} - ${userAgent}`;
+        </script>
   </div>
 </body>
 </html>
