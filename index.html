@@ -9,6 +9,29 @@
     <meta name="robots" content="index, follow">
     <title>Long Duong - Contact Information</title>
     
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), interest-cohort=()">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#2563eb">
+    
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline';
+        style-src 'self' 'unsafe-inline';
+        img-src 'self' data: https:;
+        font-src 'self' data:;
+        connect-src 'self';
+        frame-ancestors 'none';
+        base-uri 'self';
+        form-action 'self';
+        upgrade-insecure-requests;
+    ">
+    
     <!-- Preload critical resources -->
     <link rel="preload" href="profile.jpg" as="image">
     
@@ -242,6 +265,41 @@
                 transition-duration: 0.01ms !important;
             }
         }
+
+        /* Security and protection styles */
+        .no-select {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Hide elements from screen readers when needed */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Secure external link styling */
+        a[data-external-link="true"] {
+            position: relative;
+        }
+
+        a[data-external-link="true"]:after {
+            content: "🔗";
+            font-size: 0.8em;
+            margin-left: 0.25em;
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body>
@@ -277,9 +335,10 @@
                     <span class="contact-label">💼 LinkedIn:</span>
                     <a href="https://www.linkedin.com/in/longduong32/" 
                        target="_blank" 
-                       rel="noopener noreferrer" 
+                       rel="noopener noreferrer nofollow" 
                        class="contact-value"
-                       aria-label="Visit Long Duong's LinkedIn profile (opens in new tab)">
+                       aria-label="Visit Long Duong's LinkedIn profile (opens in new tab)"
+                       data-external-link="true">
                         Connect on LinkedIn
                     </a>
                 </div>
@@ -308,6 +367,65 @@
     </div>
 
     <script>
+        // Security and protection measures
+        (function() {
+            'use strict';
+            
+            // Prevent right-click context menu
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            });
+            
+            // Prevent F12, Ctrl+Shift+I, Ctrl+U, Ctrl+S
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'F12' || 
+                    (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                    (e.ctrlKey && e.key === 'u') ||
+                    (e.ctrlKey && e.key === 's')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+            
+            // Disable text selection on sensitive elements
+            document.addEventListener('selectstart', function(e) {
+                if (e.target.classList.contains('no-select')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+            
+            // Basic bot detection and rate limiting
+            let clickCount = 0;
+            let lastClickTime = 0;
+            const maxClicks = 10;
+            const timeWindow = 60000; // 1 minute
+            
+            function isBot() {
+                const now = Date.now();
+                if (now - lastClickTime > timeWindow) {
+                    clickCount = 0;
+                }
+                clickCount++;
+                lastClickTime = now;
+                
+                if (clickCount > maxClicks) {
+                    console.warn('Suspicious activity detected');
+                    return true;
+                }
+                return false;
+            }
+            
+            // Add security headers dynamically
+            if (typeof window !== 'undefined') {
+                // Force HTTPS in production
+                if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+                    location.replace('https:' + window.location.href.substring(window.location.protocol.length));
+                }
+            }
+        })();
+
         // Enhanced device detection and user experience
         document.addEventListener('DOMContentLoaded', function() {
             // Add loading animation
@@ -335,9 +453,16 @@
                 // Here you would integrate with your analytics service
             }
 
-            // Track resume downloads
+            // Track resume downloads with security checks
             document.querySelectorAll('.resume-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function(e) {
+                    // Check for bot activity
+                    if (isBot()) {
+                        e.preventDefault();
+                        console.warn('Access blocked due to suspicious activity');
+                        return false;
+                    }
+                    
                     const action = this.classList.contains('download') ? 'Download Resume' : 'View Resume';
                     trackClick(this, action);
                 });
